@@ -4,6 +4,8 @@
 
 # root-insurance-api (WIP)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/tiaanduplessis/root-insurance-api.svg)](https://greenkeeper.io/)
+
 [![package version](https://img.shields.io/npm/v/root-insurance-api.svg?style=flat-square)](https://npmjs.org/package/root-insurance-api)
 [![package downloads](https://img.shields.io/npm/dm/root-insurance-api.svg?style=flat-square)](https://npmjs.org/package/root-insurance-api)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
