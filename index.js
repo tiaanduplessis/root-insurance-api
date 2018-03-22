@@ -1,20 +1,20 @@
 const axios = require('axios')
 
 class RootInsuranceAPI {
-    constructor(opts = {}) {
-        const { env = 'api', version = 'v1', key = '', rawResponse = false } = opts
+  constructor (opts = {}) {
+    const { env = 'api', version = 'v1', key = '', rawResponse = false } = opts
 
-        this.rawResponse = rawResponse
-        this._req = axios.create({
-            baseURL: `https://${env}.root.co.za/${version}/insurance`,
-            auth: {
-                username: key,
-                password: ''
-            }
-        })
-    }
+    this.rawResponse = rawResponse
+    this._req = axios.create({
+      baseURL: `https://${env}.root.co.za/${version}/insurance`,
+      auth: {
+        username: key,
+        password: ''
+      }
+    })
+  }
 
-    /**
+  /**
      * Get supported model names.
      * @param {Object=} [config={}] config additional request configuration
      *
@@ -23,13 +23,13 @@ class RootInsuranceAPI {
      * @example
      * client.getGadgets().then(console.log).catch(console.error)
      */
-    getGadgets(config = {}) {
-        return this._req
-            .get('modules/root_gadgets/models', config)
-            .then(this._processResponse.bind(this))
-    }
+  getGadgets (config = {}) {
+    return this._req
+      .get('modules/root_gadgets/models', config)
+      .then(this._processResponse.bind(this))
+  }
 
-    /**
+  /**
      * Generate quote for chosen device make and model.
      *
      * @param {String} modelName device make and model,
@@ -40,17 +40,17 @@ class RootInsuranceAPI {
      * @example
      * client.generateGadgetQuote('Redmi 3 32GB LTE - Gold').then(console.log).catch(console.error)
      */
-    generateGadgetQuote(modelName = '', config = {}) {
-        if (!modelName || typeof modelName !== 'string') {
-            return Promise.reject(new Error('RootInsuranceAPI: Please provide valid model name.'))
-        }
-
-        return this._req
-            .post('quotes', { type: 'root_gadgets', model_name: modelName }, config)
-            .then(this._processResponse.bind(this))
+  generateGadgetQuote (modelName = '', config = {}) {
+    if (!modelName || typeof modelName !== 'string') {
+      return Promise.reject(new Error('RootInsuranceAPI: Please provide valid model name.'))
     }
 
-    /**
+    return this._req
+      .post('quotes', { type: 'root_gadgets', model_name: modelName }, config)
+      .then(this._processResponse.bind(this))
+  }
+
+  /**
      * Generate a quote for funeral cover.
      *
      * @param {Object} opts options for generated funeral quote
@@ -65,19 +65,19 @@ class RootInsuranceAPI {
      * @example
      * client.generateFuneralQuote({coverAmount: 15000}).then(console.log).catch(console.error)
      */
-    generateFuneralQuote(opts = {}, config = {}) {
-        const body = {
-            type: 'root_funeral',
-            cover_amount: opts.coverAmount || 0,
-            has_spouse: opts.hasSpouse || false,
-            number_of_children: opts.number_of_children || 0,
-            extended_family_ages: opts.extendedFamilyAges || []
-        }
-
-        return this._req.post('quotes', body, config).then(this._processResponse.bind(this))
+  generateFuneralQuote (opts = {}, config = {}) {
+    const body = {
+      type: 'root_funeral',
+      cover_amount: opts.coverAmount || 0,
+      has_spouse: opts.hasSpouse || false,
+      number_of_children: opts.number_of_children || 0,
+      extended_family_ages: opts.extendedFamilyAges || []
     }
 
-    /**
+    return this._req.post('quotes', body, config).then(this._processResponse.bind(this))
+  }
+
+  /**
      * Generate a quote for life term cover that is only valid for a certain period of time.
      *
      * @param {Object} opts options for generating life term quote
@@ -103,24 +103,24 @@ class RootInsuranceAPI {
      *  age: 26
      *  }).then(console.log).catch(res => console.log(res.response.data))
      */
-    generateLifeQuote(opts = {}, config = {}) {
-        const body = {
-            type: 'root_term',
-            cover_amount: opts.coverAmount || 0,
-            cover_period: opts.coverPeriod || 'whole_life',
-            basic_income_per_month: opts.monthyBasicIncome || 0,
-            education_status: opts.educationStatus || 'grade_12_no_matric',
-            smoker: opts.smoker || false,
-            gender: opts.gender || '',
-            age: opts.age || 0
-        }
-
-        return this._req.post('quotes', body, config).then(this._processResponse.bind(this))
+  generateLifeQuote (opts = {}, config = {}) {
+    const body = {
+      type: 'root_term',
+      cover_amount: opts.coverAmount || 0,
+      cover_period: opts.coverPeriod || 'whole_life',
+      basic_income_per_month: opts.monthyBasicIncome || 0,
+      education_status: opts.educationStatus || 'grade_12_no_matric',
+      smoker: opts.smoker || false,
+      gender: opts.gender || '',
+      age: opts.age || 0
     }
 
-    /**
+    return this._req.post('quotes', body, config).then(this._processResponse.bind(this))
+  }
+
+  /**
      * Create a policyholder.
-     * 
+     *
      * @param {Object} opts options for creating a policyholder
      * @param {String} opts.idType either `id` or `passport` (default `id`)
      * @param {String} opts.idNumber either ID or passport number
@@ -148,65 +148,65 @@ class RootInsuranceAPI {
      * }).then(console.log).catch(console.log)
      *
      */
-    createPolicyholder(opts = {}, config = {}) {
-        let body = {
-            id: {
-                type: opts.idType || 'id',
-                number: opts.idNumber || '',
-                country: opts.idCountry || 'ZA'
-            },
-            first_name: opts.firstName,
-            last_name: opts.lastName
-        }
-
-        if (opts.dateOfBirth) {
-            body.date_of_birth = opts.dateOfBirth
-        }
-
-        if (opts.email) {
-            body.email = opts.email
-        }
-
-        if (opts.cellphoneNumber && opts.cellphoneCountry) {
-            body.cellphone = {
-                number: opts.cellphoneNumber,
-                country: opts.cellphoneCountry || 'ZA'
-            }
-        }
-
-        if (opts.data && typeof opts.data === 'object') {
-            body.app_data = opts.data
-        }
-
-        return this._req.post('policyholders', body, config).then(this._processResponse.bind(this))
+  createPolicyholder (opts = {}, config = {}) {
+    let body = {
+      id: {
+        type: opts.idType || 'id',
+        number: opts.idNumber || '',
+        country: opts.idCountry || 'ZA'
+      },
+      first_name: opts.firstName,
+      last_name: opts.lastName
     }
 
-    /**
+    if (opts.dateOfBirth) {
+      body.date_of_birth = opts.dateOfBirth
+    }
+
+    if (opts.email) {
+      body.email = opts.email
+    }
+
+    if (opts.cellphoneNumber && opts.cellphoneCountry) {
+      body.cellphone = {
+        number: opts.cellphoneNumber,
+        country: opts.cellphoneCountry || 'ZA'
+      }
+    }
+
+    if (opts.data && typeof opts.data === 'object') {
+      body.app_data = opts.data
+    }
+
+    return this._req.post('policyholders', body, config).then(this._processResponse.bind(this))
+  }
+
+  /**
      * Create application for gadget.
-     * 
+     *
      * @param {Object} opts options for creating gadget application
      * @param {String} opts.packageId ID of quote package retrieved
      * @param {String} opts.policyholderId ID of the policyholder that is applying
      * @param {Number} opts.monthlyPremium premium amount, in cents, to write on policy
      * @param {String} opts.serial device to insure's serial number
      * @param {Object=} [config={}] config additional request configuration
-     * 
+     *
      * @returns {Promise}
      */
-    createGadgetApplication(opts = {}, config = {}) {
-        const body = {
-            quote_package_id: opts.packageId,
-            policyholder_id: opts.policyholderId,
-            monthly_premium: opts.monthlyPremium || 0,
-            serial_number: opts.serial
-        }
-
-        return this._req.post('applications', body, config).then(this._processResponse.bind(this))
+  createGadgetApplication (opts = {}, config = {}) {
+    const body = {
+      quote_package_id: opts.packageId,
+      policyholder_id: opts.policyholderId,
+      monthly_premium: opts.monthlyPremium || 0,
+      serial_number: opts.serial
     }
 
-    /**
+    return this._req.post('applications', body, config).then(this._processResponse.bind(this))
+  }
+
+  /**
      * Create a funeral application.
-     * 
+     *
      * @param {Object} opts options for creating funeral applicaiton
      * @param {String} opts.packageId ID of quote package retrieved
      * @param {String} opts.policyholderId ID of the policyholder that is applying
@@ -218,87 +218,85 @@ class RootInsuranceAPI {
      *
      * @returns {Promise}
      */
-    createFuneralApplication(opts = {}, config = {}) {
-        const body = {
-            quote_package_id: opts.packageId,
-            policyholder_id: opts.policyholderId,
-            monthly_premium: opts.monthlyPremium || 0,
-        }
-
-        if (opts.spouseId) {
-            body.spouse_id = spouseId
-        }
-
-        if (opts.childrenIds && Array.isArray(opts.childrenIds)) {
-            body.children_ids = opts.children_ids
-        }
-
-        if (opts.extendedFamilyIds && Array.isArray(opts.extendedFamilyIds)) {
-            body.extended_famliy_ids = opts.extendedFamilyIds
-        }
-
-        return this._req.post('applications', body, config).then(this._processResponse.bind(this))
+  createFuneralApplication (opts = {}, config = {}) {
+    const body = {
+      quote_package_id: opts.packageId,
+      policyholder_id: opts.policyholderId,
+      monthly_premium: opts.monthlyPremium || 0
     }
 
-    /**
+    if (opts.spouseId) {
+      body.spouse_id = opts.spouseId
+    }
+
+    if (opts.childrenIds && Array.isArray(opts.childrenIds)) {
+      body.children_ids = opts.children_ids
+    }
+
+    if (opts.extendedFamilyIds && Array.isArray(opts.extendedFamilyIds)) {
+      body.extended_famliy_ids = opts.extendedFamilyIds
+    }
+
+    return this._req.post('applications', body, config).then(this._processResponse.bind(this))
+  }
+
+  /**
      * Create a life term application.
-     * 
+     *
      * @param {Object} opts options for creating life term application
      * @param {String} opts.packageId ID of quote package retrieved
      * @param {String} opts.policyholderId ID of the policyholder that is applying
      * @param {Number} opts.monthlyPremium premium amount, in cents, to write on policy
      * @param {Object=} [config={}] config additional request configuration
-     * 
+     *
      * @returns [Promise]
      */
-    createLifeApplication (opts = {}, config = {}) {
-
-        const body = {
-            quote_package_id: opts.packageId,
-            policyholder_id: opts.policyholderId,
-            monthly_premium: opts.monthlyPremium || 0,
-        }
-
-        return this._req.post('applications', body, config).then(this._processResponse.bind(this))
+  createLifeApplication (opts = {}, config = {}) {
+    const body = {
+      quote_package_id: opts.packageId,
+      policyholder_id: opts.policyholderId,
+      monthly_premium: opts.monthlyPremium || 0
     }
 
-    /**
+    return this._req.post('applications', body, config).then(this._processResponse.bind(this))
+  }
+
+  /**
      * Issue a policy
-     * 
+     *
      * @param {Object|String} opts options for issuing policy or `applicationID`
      * @param {String} opts.applicationId ID of created application
      * @param {Object} opts.data an object containing additional custom data for the policy.
      * @param {Object=} [config={}] config additional request configuration
-     * 
+     *
      * @returns {Promise}
      */
-    issuePolicy (opts = {}, config = {}) {
-        let body = {}
+  issuePolicy (opts = {}, config = {}) {
+    let body = {}
 
-        if (typeof opts === 'string') {
-            body.application_id = opts
-        } else {
-            body = {
-                application_id: opts.applicationId,
-                app_data: opts.data || {}
-            }
-        }
-
-        return this._req.post('policies', body, config).then(this._processResponse.bind(this))
+    if (typeof opts === 'string') {
+      body.application_id = opts
+    } else {
+      body = {
+        application_id: opts.applicationId,
+        app_data: opts.data || {}
+      }
     }
 
+    return this._req.post('policies', body, config).then(this._processResponse.bind(this))
+  }
 
-    /**
+  /**
      * @private
      * @param {Object} res response to process
      */
-    _processResponse(res) {
-        if (this.rawResponse) {
-            return res
-        }
-
-        return res.data
+  _processResponse (res) {
+    if (this.rawResponse) {
+      return res
     }
+
+    return res.data
+  }
 }
 
 module.exports = RootInsuranceAPI
