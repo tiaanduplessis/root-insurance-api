@@ -1,0 +1,23 @@
+{
+  "name": "root-insurance-api",
+  "version": "1.0.0",
+  "description": "Wrapper for Root's insurance API",
+  "main": "index.js",
+  "repository": "https://github.com/tiaanduplessis/root-insurance-api.git",
+  "author": "Tiaan du Plessis",
+  "license": "MIT",
+  "scripts": {
+    "lint": "standard --fix",
+    "test": "jest",
+    "docs": "documentation readme index.js --section=API"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
+  },
+  "devDependencies": {
+    "documentation": "^6.1.0",
+    "jest": "^22.4.2",
+    "sa-id-gen": "^1.0.1",
+    "standard": "^11.0.1"
+  }
+}
