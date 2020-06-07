@@ -12,7 +12,7 @@
     "docs": "documentation readme index.js --section=API"
   },
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.19.2"
   },
   "devDependencies": {
     "documentation": "^6.1.0",
